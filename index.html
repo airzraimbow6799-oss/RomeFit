@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESSENTIAL REGULAR TEE – ROME STORE</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="top-banner">
+        ENVIOS GRATIS A PARTIR DE S/250.00 A TODO EL PERÚ
+    </div>
+
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="#">
+                    <h1>ROME</h1>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#">VER TODO <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="#">COLECCIONES <i class="fa-solid fa-chevron-down"></i></a></li>
+                    <li><a href="#">NEW ARRIVALS</a></li>
+                    <li><a href="#">ROME GIRLS</a></li>
+                    <li><a href="#">WORLDTOUR II</a></li>
+                    <li><a href="#" class="btn-red">ULTIMAS UNIDADES</a></li>
+                    <li><a href="#">©DISNEY</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a href="#"><i class="fa-regular fa-user"></i></a>
+                <a href="#" class="cart-icon">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="product-page">
+        <div class="breadcrumb">
+            <a href="#">Inicio</a> <i class="fa-solid fa-chevron-right"></i>
+            <a href="#">POLOS</a> <i class="fa-solid fa-chevron-right"></i>
+            <span>ESSENTIAL REGULAR TEE</span>
+            <a href="#" class="next-link">Siguiente</a>
+        </div>
+
+        <div class="product-container">
+            <!-- Left: Product Images -->
+            <div class="product-images">
+                <div class="image-grid">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop"
+                        alt="Modelo Negro 1">
+                    <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=800&auto=format&fit=crop"
+                        alt="Modelo Blanco 1">
+                    <img src="https://images.unsplash.com/photo-1618517351616-38fb9c5210c6?q=80&w=800&auto=format&fit=crop"
+                        alt="Modelo Negro 2">
+                    <img src="https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?q=80&w=800&auto=format&fit=crop"
+                        alt="Modelo Blanco 2">
+                </div>
+            </div>
+
+            <!-- Right: Product Details -->
+            <div class="product-details">
+                <h1 class="product-title">ESSENTIAL REGULAR TEE</h1>
+                <p class="product-price">S/. 59.00</p>
+
+                <div class="product-option">
+                    <p class="option-title">Color: <span id="color-label">BLANCO</span></p>
+                    <div class="color-options">
+                        <button class="color-btn black" title="Negro" id="color-negro"></button>
+                        <button class="color-btn white active" title="Blanco" id="color-blanco"></button>
+                    </div>
+                </div>
+
+                <div class="product-option">
+                    <p class="option-title">Talla: <span id="size-label">M</span></p>
+                    <!-- Size Buttons Grid -->
+                    <div class="size-buttons" id="size-buttons">
+                        <button class="size-btn" data-size="XS" id="size-btn-XS">XS</button>
+                        <button class="size-btn" data-size="S" id="size-btn-S">S</button>
+                        <button class="size-btn active" data-size="M" id="size-btn-M">M</button>
+                        <button class="size-btn" data-size="L" id="size-btn-L">L</button>
+                        <button class="size-btn" data-size="XL" id="size-btn-XL">XL</button>
+                        <button class="size-btn size-btn-custom" data-size="personalizado" id="size-btn-personalizado">
+                            <i class="fa-solid fa-ruler-combined"></i> Personalizado
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================================
+                     VISUAL SIZE PREVIEW PANEL
+                     ============================================ -->
+                <div class="size-preview-panel" id="size-preview-panel">
+                    <div class="preview-header">
+                        <span class="preview-title">Vista previa de talla</span>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span class="preview-badge" id="preview-badge">M</span>
+                            <span class="match-badge hidden" id="main-match-badge">96% Match</span>
+                        </div>
+                    </div>
+                    <div class="preview-body">
+                        <!-- 3D Avatar Container -->
+                        <div class="tshirt-preview-wrapper" id="main-3d-container"
+                            style="width: 100%; height: 280px; position: relative; cursor: grab;">
+                        </div>
+
+                        <!-- Size Metrics -->
+                        <div class="size-metrics" id="size-metrics">
+                            <div class="metric-row">
+                                <div class="metric-item">
+                                    <span class="metric-label"><i class="fa-solid fa-arrows-left-right"></i>
+                                        Ancho</span>
+                                    <span class="metric-value" id="metric-ancho">—</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label"><i class="fa-solid fa-arrows-up-down"></i> Largo</span>
+                                    <span class="metric-value" id="metric-largo">—</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label"><i class="fa-solid fa-shirt"></i> Holgura</span>
+                                    <span class="metric-value" id="metric-holgura">—</span>
+                                </div>
+                            </div>
+                            <!-- Fit Bar -->
+                            <div class="fit-bar-wrapper">
+                                <span class="fit-bar-label">Ajustado</span>
+                                <div class="fit-bar-track">
+                                    <div class="fit-bar-fill" id="fit-bar-fill"></div>
+                                    <div class="fit-bar-thumb" id="fit-bar-thumb"></div>
+                                </div>
+                                <span class="fit-bar-label">Oversize</span>
+                            </div>
+                            <!-- Size recommendation chips -->
+                            <div class="size-chips" id="size-chips">
+                                <span class="chip chip-neutral">Talla estándar</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END PREVIEW PANEL -->
+
+                <div class="quantity-guide-wrapper">
+                    <div class="quantity-selector">
+                        <button class="qty-btn" id="minus-btn"><i class="fa-solid fa-minus"></i></button>
+                        <input type="number" id="qty-input" value="1" min="1" class="qty-input" readonly>
+                        <button class="qty-btn" id="plus-btn"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <a href="#" class="size-guide"><i class="fa-solid fa-ruler-horizontal"></i> Guía de tallas</a>
+                </div>
+
+                <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                <button class="btn-buy-now">COMPRAR AHORA</button>
+
+                <div class="secure-payment">
+                    <p><i class="fa-solid fa-shield-halved"></i> Pagos 100% Seguros</p>
+                    <p class="crypto-text">Tus datos están protegidos con nosotros.</p>
+                    <div class="payment-icons">
+                        <i class="fa-brands fa-cc-amex"></i>
+                        <i class="fa-brands fa-cc-diners-club"></i>
+                        <i class="fa-brands fa-cc-mastercard"></i>
+                        <i class="fa-brands fa-cc-visa"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Guía de Tallas -->
+    <div id="size-guide-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="modal-close" id="close-guide-modal">&times;</button>
+            <h2 style="margin-top: 0;">Guía de Tallas</h2>
+            <p class="subtitle">Consulta las medidas exactas de nuestras tallas estándar.</p>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 2px solid #ddd;">
+                        <th style="padding: 10px;">Talla</th>
+                        <th style="padding: 10px;">Ancho (Pecho)</th>
+                        <th style="padding: 10px;">Largo</th>
+                        <th style="padding: 10px;">Ajuste</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px; font-weight: bold;">XS</td>
+                        <td style="padding: 10px;">42 cm</td>
+                        <td style="padding: 10px;">66 cm</td>
+                        <td style="padding: 10px;">Slim</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px; font-weight: bold;">S</td>
+                        <td style="padding: 10px;">46 cm</td>
+                        <td style="padding: 10px;">69 cm</td>
+                        <td style="padding: 10px;">Regular</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee; background: #f9f9f9;">
+                        <td style="padding: 10px; font-weight: bold;">M (Predeterminada)</td>
+                        <td style="padding: 10px;">50 cm</td>
+                        <td style="padding: 10px;">71 cm</td>
+                        <td style="padding: 10px;">Regular</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px; font-weight: bold;">L</td>
+                        <td style="padding: 10px;">54 cm</td>
+                        <td style="padding: 10px;">74 cm</td>
+                        <td style="padding: 10px;">Amplio</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px; font-weight: bold;">XL</td>
+                        <td style="padding: 10px;">58 cm</td>
+                        <td style="padding: 10px;">76 cm</td>
+                        <td style="padding: 10px;">Amplio</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="background: #f4f4f4; padding: 15px; border-radius: 8px; text-align: center; margin-top: 20px;">
+                <p style="margin-top: 0; font-size: 0.95rem; color: #555;">¿No encuentras una talla que se adapte perfectamente a ti?</p>
+                <button id="btn-guide-to-custom" style="background: #000; color: #fff; padding: 10px 20px; border: none; border-radius: 20px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem;">
+                    <i class="fa-solid fa-ruler-combined"></i> Crear talla Personalizada
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Personalizado -->
+    <div id="custom-size-modal" class="modal-overlay hidden">
+        <div class="modal-content modal-wide">
+            <button class="modal-close" id="close-modal">&times;</button>
+
+            <div class="modal-split">
+                <!-- LEFT: Wizard -->
+                <div class="modal-wizard-side">
+                    <div id="wizard-container">
+                        <h2>Talla Personalizada</h2>
+                        <p class="subtitle">Encontremos o creemos el ajuste perfecto para ti.</p>
+
+                        <div class="wizard-progress">
+                            <div class="progress-bar" id="progress-bar"></div>
+                        </div>
+
+                        <!-- Step 1 -->
+                        <div class="wizard-step active" id="step-1">
+                            <h3>Paso 1 de 4 — Medidas Básicas</h3>
+                            <div class="form-group">
+                                <label>Estatura (cm)</label>
+                                <input type="number" id="w-estatura" placeholder="Ej. 175" min="140" max="220">
+                            </div>
+                            <div class="form-group">
+                                <label>Peso (kg)</label>
+                                <input type="number" id="w-peso" placeholder="Ej. 70" min="40" max="200">
+                            </div>
+                            <div class="form-group">
+                                <label>Edad</label>
+                                <input type="number" id="w-edad" placeholder="Ej. 25" min="10" max="99">
+                            </div>
+                            <div class="wizard-buttons right">
+                                <button class="btn-next" data-step="1">Siguiente</button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="wizard-step hidden" id="step-2">
+                            <h3>Paso 2 de 4 — Tipo de Torso / Hombros</h3>
+                            <div class="form-options">
+                                <label class="radio-option" data-name="torso" data-val="anchos">
+                                    <input type="radio" name="torso" value="anchos">
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🦾</span>
+                                        <span>Anchos</span>
+                                    </div>
+                                </label>
+                                <label class="radio-option" data-name="torso" data-val="atleticos">
+                                    <input type="radio" name="torso" value="atleticos">
+                                    <div class="radio-content">
+                                        <span class="radio-icon">💪</span>
+                                        <span>Atléticos</span>
+                                    </div>
+                                </label>
+                                <label class="radio-option" data-name="torso" data-val="caidos">
+                                    <input type="radio" name="torso" value="caidos">
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🙆</span>
+                                        <span>Caídos</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="wizard-buttons">
+                                <button class="btn-prev" data-step="2">Atrás</button>
+                                <button class="btn-next" data-step="2">Siguiente</button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="wizard-step hidden" id="step-3">
+                            <h3>Paso 3 de 4 — Forma del Abdomen</h3>
+                            <div class="form-options">
+                                <label class="radio-option" data-name="abdomen" data-val="plano">
+                                    <input type="radio" name="abdomen" value="plano">
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🏃</span>
+                                        <span>Plano</span>
+                                    </div>
+                                </label>
+                                <label class="radio-option" data-name="abdomen" data-val="promedio">
+                                    <input type="radio" name="abdomen" value="promedio">
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🧍</span>
+                                        <span>Promedio</span>
+                                    </div>
+                                </label>
+                                <label class="radio-option" data-name="abdomen" data-val="robusto">
+                                    <input type="radio" name="abdomen" value="robusto">
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🏋️</span>
+                                        <span>Robusto</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="wizard-buttons">
+                                <button class="btn-prev" data-step="3">Atrás</button>
+                                <button class="btn-next" data-step="3">Siguiente</button>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="wizard-step hidden" id="step-4">
+                            <h3>Paso 4 de 4 — Nivel de Holgura</h3>
+                            <div class="form-options">
+                                <label class="radio-option" data-name="holgura" data-val="moderado">
+                                    <input type="radio" name="holgura" value="moderado">
+                                    <div class="radio-content">
+                                        <span class="radio-icon">👔</span>
+                                        <span>Moderado <small>Ajuste regular</small></span>
+                                    </div>
+                                </label>
+                                <label class="radio-option" data-name="holgura" data-val="oversize">
+                                    <input type="radio" name="holgura" value="oversize">
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🧥</span>
+                                        <span>Oversize <small>Cómodo y amplio</small></span>
+                                    </div>
+                                </label>
+                                <label class="radio-option" data-name="holgura" data-val="extreme">
+                                    <input type="radio" name="holgura" value="extreme">
+                                    <div class="radio-content">
+                                        <span class="radio-icon">🌊</span>
+                                        <span>Extreme Oversize <small>Máxima amplitud</small></span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="wizard-buttons">
+                                <button class="btn-prev" data-step="4">Atrás</button>
+                                <button class="btn-finish" id="btn-finish-wizard">Calcular Talla</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="loading-container" class="hidden">
+                        <div class="loader"></div>
+                        <p id="loading-text">Calculando tu ajuste ideal...</p>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Live Preview -->
+                <div class="modal-preview-side">
+                    <p class="preview-side-label">Vista previa en tiempo real</p>
+
+                    <!-- 3D Avatar Container for Modal -->
+                    <div class="modal-tshirt-wrapper" id="modal-3d-container"
+                        style="width: 100%; height: 280px; position: relative; cursor: grab;">
+                    </div>
+
+                    <!-- Live Stats -->
+                    <div class="live-stats">
+                        <div class="live-stat-row">
+                            <span class="live-stat-icon">📏</span>
+                            <span class="live-stat-key">Estatura</span>
+                            <span class="live-stat-val" id="live-estatura">—</span>
+                        </div>
+                        <div class="live-stat-row">
+                            <span class="live-stat-icon">⚖️</span>
+                            <span class="live-stat-key">Peso</span>
+                            <span class="live-stat-val" id="live-peso">—</span>
+                        </div>
+                        <div class="live-stat-row">
+                            <span class="live-stat-icon">🦾</span>
+                            <span class="live-stat-key">Torso</span>
+                            <span class="live-stat-val" id="live-torso">—</span>
+                        </div>
+                        <div class="live-stat-row">
+                            <span class="live-stat-icon">🏃</span>
+                            <span class="live-stat-key">Abdomen</span>
+                            <span class="live-stat-val" id="live-abdomen">—</span>
+                        </div>
+                        <div class="live-stat-row">
+                            <span class="live-stat-icon">🧥</span>
+                            <span class="live-stat-key">Holgura</span>
+                            <span class="live-stat-val" id="live-holgura">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Predicted size chip -->
+                    <div class="predicted-size-wrapper">
+                        <span class="predicted-label">Talla estimada</span>
+                        <div
+                            style="display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 5px;">
+                            <span class="predicted-badge" id="predicted-badge">?</span>
+                            <span class="match-badge hidden" id="match-badge">98% Match</span>
+                        </div>
+                    </div>
+
+                    <!-- Fit bar in modal -->
+                    <div class="fit-bar-wrapper modal-fit-bar">
+                        <span class="fit-bar-label">Ajustado</span>
+                        <div class="fit-bar-track">
+                            <div class="fit-bar-fill" id="modal-fit-bar-fill"></div>
+                            <div class="fit-bar-thumb" id="modal-fit-bar-thumb"></div>
+                        </div>
+                        <span class="fit-bar-label">Oversize</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confección -->
+    <div id="confeccion-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button class="modal-close" id="close-confeccion">&times;</button>
+            <div class="confeccion-details">
+                <div class="icon-large-wrapper"><i class="fa-solid fa-scissors icon-large"></i></div>
+                <h2>Esta prenda se envía a confección</h2>
+                <p>Tu estilo y medidas requieren un ajuste especial que no tenemos actualmente en stock inmediato. Lo
+                    crearemos exclusivamente para ti.</p>
+
+                <div class="info-box">
+                    <p style="margin-bottom: 5px;"><strong><i class="fa-regular fa-clock"></i> Tiempo de confección:</strong> 5 a 7 días hábiles.</p>
+                    <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">¿Por qué este tiempo? Realizamos el patronaje personalizado, cortamos la tela manualmente y ensamblamos tu prenda desde cero para garantizar tu calce perfecto.</p>
+                    
+                    <div style="display: flex; justify-content: space-between; position: relative; margin-top: 25px; margin-bottom: 10px;">
+                        <div style="position: absolute; top: 7px; left: 10%; right: 10%; height: 2px; background: #ddd; z-index: 1;"></div>
+                        
+                        <div style="display: flex; flex-direction: column; align-items: center; z-index: 2; width: 20%; text-align: center;">
+                            <div style="width: 16px; height: 16px; border-radius: 50%; background: #000; border: 2px solid #fff; margin-bottom: 5px;"></div>
+                            <span style="font-size: 0.6rem; font-weight: bold; color: #000; line-height: 1.1;">Solicitud<br>enviada</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; z-index: 2; width: 20%; text-align: center;">
+                            <div style="width: 16px; height: 16px; border-radius: 50%; background: #ddd; border: 2px solid #fff; margin-bottom: 5px;"></div>
+                            <span style="font-size: 0.6rem; color: #888; line-height: 1.1;">Solicitud<br>recibida</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; z-index: 2; width: 20%; text-align: center;">
+                            <div style="width: 16px; height: 16px; border-radius: 50%; background: #ddd; border: 2px solid #fff; margin-bottom: 5px;"></div>
+                            <span style="font-size: 0.6rem; color: #888; line-height: 1.1;">En<br>confección</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; z-index: 2; width: 20%; text-align: center;">
+                            <div style="width: 16px; height: 16px; border-radius: 50%; background: #ddd; border: 2px solid #fff; margin-bottom: 5px;"></div>
+                            <span style="font-size: 0.6rem; color: #888; line-height: 1.1;">En proceso<br>de envío</span>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; z-index: 2; width: 20%; text-align: center;">
+                            <div style="width: 16px; height: 16px; border-radius: 50%; background: #ddd; border: 2px solid #fff; margin-bottom: 5px;"></div>
+                            <span style="font-size: 0.6rem; color: #888; line-height: 1.1;">Enviado a<br>domicilio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-summary">
+                    <h3>Resumen a pagar</h3>
+                    <div class="summary-row">
+                        <span>ESSENTIAL REGULAR TEE (A Medida)</span>
+                        <span>S/. 79.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Envío Express</span>
+                        <span>S/. 20.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>TOTAL</span>
+                        <span>S/. 99.00</span>
+                    </div>
+                </div>
+
+                <p class="crypto-text text-center" style="margin-top: 15px;">Recibirás actualizaciones constantes de
+                    cada etapa de tu prenda.</p>
+                <button class="btn-buy-now custom-buy-btn" style="margin-bottom: 0;">PROCEDER AL PAGO</button>
+            </div>
+        </div>
+    </div>
+    <!-- Payment Checkout Modal -->
+    <div id="payment-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="modal-close" id="close-payment">&times;</button>
+            <h2 style="margin-top: 0; margin-bottom: 5px;"><i class="fa-solid fa-lock" style="font-size: 0.8em; color: #4CAF50;"></i> Checkout Seguro</h2>
+            <p class="subtitle" style="margin-bottom: 20px;">Finaliza tu compra seleccionando el método de entrega y pago.</p>
+
+            <div style="margin-bottom: 20px;">
+                <h3 style="font-size: 1rem; margin-bottom: 10px;">1. Método de Entrega</h3>
+                <div style="display: flex; gap: 10px;">
+                    <label style="flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="delivery_method" value="tienda" checked>
+                        <span style="font-weight: 500;"><i class="fa-solid fa-store"></i> Recoger en tienda</span>
+                    </label>
+                    <label style="flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="delivery_method" value="delivery">
+                        <span style="font-weight: 500;"><i class="fa-solid fa-motorcycle"></i> Delivery</span>
+                    </label>
+                </div>
+                
+                <!-- Delivery Form (Hidden by default) -->
+                <div id="delivery-form" class="hidden" style="margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                    <div style="margin-bottom: 10px;">
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px;">Distrito *</label>
+                        <select style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                            <option>Seleccione un distrito</option>
+                            <option>Miraflores</option>
+                            <option>San Isidro</option>
+                            <option>Surco</option>
+                            <option>Barranco</option>
+                            <option>Lima Cercado</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px;">Dirección completa *</label>
+                        <input type="text" placeholder="Av. / Calle / Jr." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.85rem; margin-bottom: 5px;">Casa, Lote, Depto (Opcional)</label>
+                        <input type="text" placeholder="Ej. Dpto 301, Torre B" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <h3 style="font-size: 1rem; margin-bottom: 10px;">2. Método de Pago</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <label style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="payment_method" value="plin" checked>
+                        <span style="font-weight: 500; color: #00DDBA;"><i class="fa-solid fa-mobile-screen"></i> Plin</span>
+                    </label>
+                    <label style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="payment_method" value="yape">
+                        <span style="font-weight: 500; color: #6D2470;"><i class="fa-solid fa-qrcode"></i> Yape</span>
+                    </label>
+                    <label style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="payment_method" value="card">
+                        <span style="font-weight: 500;"><i class="fa-brands fa-cc-visa"></i> / <i class="fa-brands fa-cc-mastercard"></i> Tarjeta</span>
+                    </label>
+                    <label style="border: 1px solid #ddd; border-radius: 8px; padding: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="payment_method" value="cash">
+                        <span style="font-weight: 500;"><i class="fa-solid fa-hand-holding-dollar"></i> Contra entrega</span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="btn-complete-payment" class="btn-buy-now" style="margin-bottom: 0; width: 100%;">
+                <i class="fa-solid fa-check-circle"></i> PAGO COMPLETADO
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Success -->
+    <div id="success-modal" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div style="font-size: 4rem; color: #4CAF50; margin-bottom: 15px;"><i class="fa-solid fa-circle-check"></i></div>
+            <h2 style="margin-top: 0;">¡Pedido Confirmado!</h2>
+            <p style="color: #666; margin-bottom: 25px;">Tu pago ha sido procesado exitosamente. Te enviaremos un correo con los detalles del seguimiento de tu pedido.</p>
+            <button id="btn-close-success" class="btn-buy-now" style="width: 100%; margin-bottom: 0;">VOLVER A LA TIENDA</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
