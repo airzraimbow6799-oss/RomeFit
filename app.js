@@ -3,152 +3,84 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================================
     // 3D AVATAR IMPLEMENTATION (THREE.JS)
     // ============================================================
+    // Un solo GLB (cuerpo + polo modelados juntos en Blender) con morph targets
+    // horneados. El polo se esculpió SOBRE el cuerpo (shrinkwrap) y sus morphs
+    // tienen amplitud mayor a la del cuerpo, por lo que nunca se traspasan.
+    // Morphs cuerpo:  ancho, altura, hombros, abdomen, caidos
+    // Morphs polo:    los mismos + holgura, largo (solo prenda)
     class Mannequin3D {
         constructor(scene, isModal = false) {
             this.group = new THREE.Group();
-            this.bodyGroup = new THREE.Group();
-            this.shirtGroup = new THREE.Group();
-
-            this.group.add(this.bodyGroup);
-            this.group.add(this.shirtGroup);
-            this.group.position.y = 0.5;
+            // Modelo mide 1.75 unidades (metros). Escalamos a ~6.5 de alto en escena.
+            const s = 6.5 / 1.75;
+            this.group.scale.set(s, s, s);
+            this.group.position.y = -3.1; // pies cerca del borde inferior
             scene.add(this.group);
 
             this.isModal = isModal;
-            this.loadedBody = null;
-            this.loadedShirt = null;
+            this.bodyMesh = null;
+            this.shirtMesh = null;
+            // Influencias objetivo por morph (se interpolan suavemente cada frame)
+            this.targets = { ancho: 0, altura: 0, hombros: 0, abdomen: 0, caidos: 0, holgura: 0, largo: 0 };
 
-            // Load the GLB models
             if (window.THREE && window.THREE.GLTFLoader) {
                 const loader = new THREE.GLTFLoader();
-
-                // 1. Cargar Cuerpo
-                loader.load('Cuerpo 3d/male_human_a_pose.glb', (gltf) => {
-                    this.loadedBody = gltf.scene;
-
-                    this.loadedBody.traverse((child) => {
-                        if (child.isMesh) {
-                            child.material = new THREE.MeshStandardMaterial({
-                                color: 0x222222,
-                                roughness: 0.7,
-                                metalness: 0.1
-                            });
-                        }
-                        // Ajuste fino: Levantar significativamente los brazos para que entren en las mangas
-                        if (child.isBone) {
-                            const name = child.name.toLowerCase();
-                            // Hombro/Brazo izquierdo (Levantar: +Z)
-                            if (name.includes('leftarm') || name.includes('arm_l') || name.includes('upperarm_l') || name === 'mixamorig:leftarm') {
-                                child.rotation.z += 0.8; // Aprox 45 grados hacia arriba
-                            }
-                            // Hombro/Brazo derecho (Levantar: -Z)
-                            if (name.includes('rightarm') || name.includes('arm_r') || name.includes('upperarm_r') || name === 'mixamorig:rightarm') {
-                                child.rotation.z -= 0.8;
+                loader.load('Cuerpo 3d/avatar_fit.glb', (gltf) => {
+                    gltf.scene.traverse((child) => {
+                        if (child.isMesh && child.morphTargetDictionary) {
+                            child.frustumCulled = false;
+                            if ('holgura' in child.morphTargetDictionary) {
+                                this.shirtMesh = child;
+                                child.material.side = THREE.DoubleSide;
+                            } else {
+                                this.bodyMesh = child;
                             }
                         }
                     });
-
-                    const box = new THREE.Box3().setFromObject(this.loadedBody);
-                    const size = box.getSize(new THREE.Vector3());
-                    const center = box.getCenter(new THREE.Vector3());
-
-                    const targetHeight = 6.5;
-                    const scale = targetHeight / size.y;
-                    this.loadedBody.scale.set(scale, scale, scale);
-
-                    this.loadedBody.position.x = -center.x * scale;
-                    this.loadedBody.position.y = (-center.y * scale) + 0.5;
-                    this.loadedBody.position.z = -center.z * scale;
-
-                    this.bodyGroup.add(this.loadedBody);
-                }, undefined, (error) => {
-                    console.error('Error loading GLB body:', error);
-                });
-
-                // 2. Cargar Polo (Camiseta)
-                loader.load('Cuerpo 3d/oversized_t-shirt.glb', (gltf) => {
-                    this.loadedShirt = gltf.scene;
-
-                    this.loadedShirt.traverse((child) => {
-                        if (child.isMesh) {
-                            child.material = new THREE.MeshStandardMaterial({
-                                color: 0xdddddd, // Blanco por defecto
-                                roughness: 0.8,
-                                metalness: 0.0,
-                                side: THREE.DoubleSide
-                            });
-                        }
-                    });
-
-                    const box = new THREE.Box3().setFromObject(this.loadedShirt);
-                    const size = box.getSize(new THREE.Vector3());
-                    const center = box.getCenter(new THREE.Vector3());
-
-                    // Como el modelo es inherentemente 'oversize', reducimos su base a 45%
-                    const targetHeight = 6.5 * 0.45;
-                    const scale = targetHeight / size.y;
-
-                    // Solo incrementamos un 5% la profundidad (Z) para evitar que el pecho traspase, 
-                    // devolviendo el ancho (X) a su escala normal para quitar el efecto campana.
-                    this.loadedShirt.scale.set(scale, scale, scale * 1.45);
-
-                    this.loadedShirt.position.x = -center.x * scale;
-                    // Ajuste de altura (Y)
-                    this.loadedShirt.position.y = (-center.y * scale) + 1.9;
-                    // Movemos el polo ligerísimamente hacia adelante en Z para salvar los pectorales
-                    this.loadedShirt.position.z = (-center.z * scale) + 0.15;
-
-                    this.shirtGroup.add(this.loadedShirt);
-
-                    // Aseguramos que tome el color actual
+                    this.group.add(gltf.scene);
                     this.setColor(currentColor);
+                    this.applyTargets(true); // aplicar estado inicial sin animación
                 }, undefined, (error) => {
-                    console.error('Error loading GLB polo:', error);
+                    console.error('Error loading avatar_fit.glb:', error);
                 });
             }
         }
 
-        update(pWidthMod, pLengthMod, torsoType, abdomenType, tWidthMod, tLengthMod) {
-            // 1. Modificar el cuerpo
-            let bodyScaleX = 1.0 + (pWidthMod * 0.5);
-            let bodyScaleY = 1.0 + (pLengthMod * 0.2);
-            let bodyScaleZ = 1.0 + (pWidthMod * 0.5);
+        // Fija influencias objetivo. Mismo nombre de morph => cuerpo y polo se
+        // mueven juntos (el polo con mayor amplitud, horneada en el GLB).
+        setMorphs(vals) {
+            Object.keys(vals).forEach(k => {
+                if (k in this.targets) this.targets[k] = vals[k];
+            });
+        }
 
-            if (torsoType === 'anchos') bodyScaleX += 0.15;
-            if (torsoType === 'caidos') bodyScaleX -= 0.1;
+        applyToMesh(mesh, immediate) {
+            if (!mesh || !mesh.morphTargetInfluences) return;
+            const dict = mesh.morphTargetDictionary;
+            Object.keys(this.targets).forEach(name => {
+                if (!(name in dict)) return;
+                const idx = dict[name];
+                const cur = mesh.morphTargetInfluences[idx];
+                const tgt = this.targets[name];
+                // Interpolación suave => cambio "a tiempo real" fluido
+                mesh.morphTargetInfluences[idx] = immediate ? tgt : cur + (tgt - cur) * 0.14;
+            });
+        }
 
-            if (abdomenType === 'robusto') bodyScaleZ += 0.3;
-            if (abdomenType === 'plano') bodyScaleZ -= 0.1;
+        applyTargets(immediate) {
+            this.applyToMesh(this.bodyMesh, immediate);
+            this.applyToMesh(this.shirtMesh, immediate);
+        }
 
-            this.bodyGroup.scale.set(bodyScaleX, bodyScaleY, bodyScaleZ);
-
-            // 2. Modificar la camiseta (Shirt GLB)
-            // Ya no forzamos un encogimiento extremo porque ahora el maniquí mismo 
-            // reduce su masa corporal para tallas más pequeñas.
-            let slimFactorX = -0.02; // Apenas -2% de ajuste
-            let slimFactorZ = 0.0; 
-            
-            // El multiplicador de holgura (tWidthMod) asegura que crezca para L y XL
-            let shirtScaleX = bodyScaleX + slimFactorX + (tWidthMod * 0.45);
-            let shirtScaleY = bodyScaleY + (tLengthMod * 0.25);
-            let shirtScaleZ = bodyScaleZ + slimFactorZ + (tWidthMod * 0.35);
-
-            this.shirtGroup.scale.set(shirtScaleX, shirtScaleY, shirtScaleZ);
-
-            // Compensación de posición Y al escalar:
-            // Al estirarse la ropa (scaleY > 1), se desplaza hacia arriba alejándose del torso. 
-            // Esta línea empuja la ropa hacia abajo proporcionalmente para mantenerla anclada a los hombros.
-            this.shirtGroup.position.y = -(shirtScaleY - 1) * 0.8;
+        // Llamado cada frame desde el loop de animación
+        tick() {
+            this.applyTargets(false);
         }
 
         setColor(color) {
             const hexColor = color === 'white' ? 0xdddddd : 0x111111;
-            if (this.loadedShirt) {
-                this.loadedShirt.traverse((child) => {
-                    if (child.isMesh && child.material) {
-                        child.material.color.setHex(hexColor);
-                    }
-                });
+            if (this.shirtMesh && this.shirtMesh.material) {
+                this.shirtMesh.material.color.setHex(hexColor);
             }
         }
     }
@@ -195,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
+            mannequin.tick(); // interpola morphs => transiciones suaves
             renderer.render(scene, camera);
         }
         animate();
@@ -225,14 +158,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================================
     // SIZE DATA TABLE
     // ============================================================
+    // holgura/largo = influencias de morph del polo (0 = ajustado al cuerpo).
+    // El cuerpo NO cambia con la talla estándar: misma persona, distinta prenda.
     const SIZE_DATA = {
-        'XS': { widthMod: 0.0, lengthMod: 0.0, ancho: '42 cm', largo: '66 cm', holguraLabel: 'Slim', fitPos: 0.05 },
-        'S': { widthMod: 0.2, lengthMod: 0.2, ancho: '46 cm', largo: '69 cm', holguraLabel: 'Regular', fitPos: 0.22 },
-        'M': { widthMod: 0.38, lengthMod: 0.35, ancho: '50 cm', largo: '71 cm', holguraLabel: 'Regular', fitPos: 0.38 },
-        'L': { widthMod: 0.55, lengthMod: 0.5, ancho: '54 cm', largo: '74 cm', holguraLabel: 'Amplio', fitPos: 0.55 },
-        'XL': { widthMod: 0.72, lengthMod: 0.65, ancho: '58 cm', largo: '76 cm', holguraLabel: 'Amplio', fitPos: 0.72 },
-        'personalizado': { widthMod: 0.5, lengthMod: 0.5, ancho: '—', largo: '—', holguraLabel: '?', fitPos: 0.5 },
+        'XS': { holgura: 0.00, largo: 0.00, ancho: '42 cm', largo_txt: '66 cm', holguraLabel: 'Slim', fitPos: 0.05 },
+        'S': { holgura: 0.22, largo: 0.15, ancho: '46 cm', largo_txt: '69 cm', holguraLabel: 'Regular', fitPos: 0.22 },
+        'M': { holgura: 0.45, largo: 0.32, ancho: '50 cm', largo_txt: '71 cm', holguraLabel: 'Regular', fitPos: 0.38 },
+        'L': { holgura: 0.70, largo: 0.52, ancho: '54 cm', largo_txt: '74 cm', holguraLabel: 'Amplio', fitPos: 0.55 },
+        'XL': { holgura: 0.95, largo: 0.72, ancho: '58 cm', largo_txt: '76 cm', holguraLabel: 'Amplio', fitPos: 0.72 },
+        'personalizado': { holgura: 0.5, largo: 0.4, ancho: '—', largo_txt: '—', holguraLabel: '?', fitPos: 0.5 },
     };
+
+    // Cuerpo base "promedio" para la vista principal
+    const DEFAULT_BODY = { ancho: 0.35, altura: 0.3, hombros: 0.1, abdomen: 0.2, caidos: 0 };
 
     // Active selections
     let currentSize = 'M';
@@ -325,12 +263,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = SIZE_DATA[size] || SIZE_DATA['M'];
 
-        // Centramos las modificaciones del cuerpo en la talla M (0.38 en ancho, 0.35 en largo)
-        // De este modo, si seleccionan XS o S, el cuerpo base del maniquí se encoge.
-        const pModW = (data.widthMod - 0.38) * 0.8;
-        const pModH = (data.lengthMod - 0.35) * 0.8;
-
-        mainMannequin.update(pModW, pModH, 'promedio', 'promedio', data.widthMod, data.lengthMod);
+        // Cuerpo promedio fijo; solo la prenda cambia con la talla.
+        mainMannequin.setMorphs(Object.assign({}, DEFAULT_BODY, {
+            holgura: data.holgura,
+            largo: data.largo
+        }));
     }
 
     // ============================================================
@@ -348,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mLargo = document.getElementById('metric-largo');
         const mHolgura = document.getElementById('metric-holgura');
         if (mAncho) mAncho.textContent = data.ancho;
-        if (mLargo) mLargo.textContent = data.largo;
+        if (mLargo) mLargo.textContent = data.largo_txt;
         if (mHolgura) mHolgura.textContent = data.holguraLabel;
 
         // Fit bar
@@ -658,68 +595,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================================
-    // COMPUTE VISUAL TSHIRT PARAMS FROM WIZARD DATA
+    // WIZARD DATA -> MORPH INFLUENCES (cuerpo + prenda a la vez)
     // ============================================================
-    function computeModalTshirtParams() {
+    function computeWizardMorphs() {
         const peso = wizardData.peso || 70;
         const estatura = wizardData.estatura || 170;
-        const holgura = wizardData.holgura;
 
-        // widthMod based on peso + torso + holgura
-        let widthMod = 0.35;
-        if (peso < 60) widthMod = 0.15;
-        else if (peso <= 70) widthMod = 0.28;
-        else if (peso <= 80) widthMod = 0.42;
-        else if (peso <= 95) widthMod = 0.58;
-        else widthMod = 0.72;
+        const clamp01 = (v) => Math.min(Math.max(v, 0), 1);
 
-        if (wizardData.torso === 'anchos') widthMod += 0.1;
-        if (wizardData.abdomen === 'robusto') widthMod += 0.12;
-        if (holgura === 'oversize') widthMod += 0.12;
-        if (holgura === 'extreme') widthMod += 0.22;
+        // Cuerpo: continuo, cada tecla del usuario se refleja al instante
+        const ancho = clamp01((peso - 55) / 50);          // 55kg=0 .. 105kg=1
+        const altura = clamp01((estatura - 158) / 34);    // 158cm=0 .. 192cm=1
 
-        // lengthMod based on estatura
-        let lengthMod = 0.35;
-        if (estatura < 160) lengthMod = 0.1;
-        else if (estatura <= 170) lengthMod = 0.28;
-        else if (estatura <= 180) lengthMod = 0.45;
-        else lengthMod = 0.68;
+        let hombros = 0.1, caidos = 0;
+        if (wizardData.torso === 'anchos') hombros = 1;
+        if (wizardData.torso === 'atleticos') hombros = 0.45;
+        if (wizardData.torso === 'caidos') { hombros = 0; caidos = 1; }
 
-        widthMod = Math.min(Math.max(widthMod, 0), 1);
-        lengthMod = Math.min(Math.max(lengthMod, 0), 1);
-        return { widthMod, lengthMod };
-    }
+        let abdomen = 0.25;
+        if (wizardData.abdomen === 'plano') abdomen = 0;
+        if (wizardData.abdomen === 'robusto') abdomen = 1;
 
-    function computeModalPersonParams() {
-        const peso = wizardData.peso || 70;
-        const estatura = wizardData.estatura || 170;
-        const torso = wizardData.torso || 'atleticos';
-        const abdomen = wizardData.abdomen || 'promedio';
+        // Prenda: nivel de holgura elegido
+        let holgura = 0.45, largo = 0.32;
+        if (wizardData.holgura === 'moderado') { holgura = 0.35; largo = 0.25; }
+        if (wizardData.holgura === 'oversize') { holgura = 0.8; largo = 0.6; }
+        if (wizardData.holgura === 'extreme') { holgura = 1.15; largo = 0.9; }
 
-        // widthMod based strictly on weight for the person body
-        let pWidthMod = 0.35;
-        if (peso < 60) pWidthMod = 0.1;
-        else if (peso <= 70) pWidthMod = 0.25;
-        else if (peso <= 80) pWidthMod = 0.40;
-        else if (peso <= 95) pWidthMod = 0.60;
-        else pWidthMod = 0.85;
-
-        // lengthMod based on height
-        let pLengthMod = 0.35;
-        if (estatura < 160) pLengthMod = 0.05;
-        else if (estatura <= 170) pLengthMod = 0.25;
-        else if (estatura <= 180) pLengthMod = 0.50;
-        else pLengthMod = 0.80;
-
-        return { pWidthMod, pLengthMod, torso, abdomen };
+        return { ancho, altura, hombros, caidos, abdomen, holgura, largo };
     }
 
     // ============================================================
-    // RENDER MODAL TSHIRT & PERSON 3D
+    // RENDER MODAL 3D (cuerpo y polo comparten morphs => nunca se traspasan)
     // ============================================================
-    function renderModalTshirt(widthMod, lengthMod, pWidthMod, pLengthMod, torso, abdomen) {
+    function renderModalTshirt(morphs) {
         if (!modalMannequin) return;
-        modalMannequin.update(pWidthMod, pLengthMod, torso, abdomen, widthMod, lengthMod);
+        modalMannequin.setColor(currentColor);
+        modalMannequin.setMorphs(morphs);
     }
 
     // ============================================================
@@ -745,10 +657,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mFill) mFill.style.width = `${fitPos * 100}%`;
         if (mThumb) mThumb.style.left = `${fitPos * 100}%`;
 
-        // 4. Tshirt & Person SVG
-        const { widthMod, lengthMod } = computeModalTshirtParams();
-        const { pWidthMod, pLengthMod, torso, abdomen } = computeModalPersonParams();
-        renderModalTshirt(widthMod, lengthMod, pWidthMod, pLengthMod, torso, abdomen);
+        // 4. Avatar 3D: cuerpo + prenda actualizados en un solo paso
+        renderModalTshirt(computeWizardMorphs());
     }
 
     function updateLiveStat(id, text, filled) {
